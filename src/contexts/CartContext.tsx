@@ -1,23 +1,7 @@
-import React, {createContext, useState, ReactNode} from 'react';
+import React, {createContext, useState} from 'react';
 
-interface ProductTypes {
-  id: Number;
-  title: String;
-  price: String;
-  category: String;
-  description: String;
-  image: String;
-}
-
-interface CartContextTypes {
-  productsCart: ProductTypes[];
-  addProductToCart: (value: ProductTypes) => void;
-  removeProductToCart: (value: ProductTypes) => void;
-}
-
-interface CartContextProviderTypes {
-  children: ReactNode;
-}
+import {ProductTypes} from '../types/ProductTypes';
+import {CartContextTypes, CartContextProviderTypes} from '../types/CartTypes';
 
 export const CartContext = createContext({} as CartContextTypes);
 
