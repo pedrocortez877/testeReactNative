@@ -83,16 +83,16 @@ export function Home() {
           <Text style={styles.title}>Produtos</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
             <Image source={IconBag} style={styles.iconBag} />
+            {totalQuantity ? (
+              <View style={styles.countProductsToCartArea}>
+                <Text style={styles.countProductsToCartText}>
+                  {totalQuantity}
+                </Text>
+              </View>
+            ) : (
+              <></>
+            )}
           </TouchableOpacity>
-          {totalQuantity ? (
-            <View style={styles.countProductsToCartArea}>
-              <Text style={styles.countProductsToCartText}>
-                {totalQuantity}
-              </Text>
-            </View>
-          ) : (
-            <></>
-          )}
         </View>
         <View style={styles.categoriesArea}>
           <Text style={styles.titleCategoriesArea}>FILTRAR CATEGORIA</Text>
