@@ -36,7 +36,7 @@ export function CardProduct(props: PropsCardProduct) {
       <View style={styles.descriptionProductArea}>
         <Text style={styles.categoryName}>{item.category}</Text>
         <Text style={styles.productName}>
-          {item.title.length > 30 ? item.title.substring(0, 17) : item.title}
+          {item.title.length > 17 ? item.title.substring(0, 17) : item.title}
         </Text>
         {news ? (
           <Text style={styles.descriptionProduct}>
