@@ -81,7 +81,9 @@ export function Home() {
       <View style={styles.header}>
         <View style={styles.titleAndIconBagArea}>
           <Text style={styles.title}>Produtos</Text>
-          <Image source={IconBag} style={styles.iconBag} />
+          <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
+            <Image source={IconBag} style={styles.iconBag} />
+          </TouchableOpacity>
           {totalQuantity ? (
             <View style={styles.countProductsToCartArea}>
               <Text style={styles.countProductsToCartText}>
