@@ -1,5 +1,6 @@
 import React from 'react';
 import {StatusBar} from 'react-native';
+import {CartContextProvider} from './src/contexts/CartContext';
 
 import Routes from './src/routes';
 
@@ -9,7 +10,9 @@ export default function App() {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-      <Routes />
+      <CartContextProvider>
+        <Routes />
+      </CartContextProvider>
     </>
   );
 }
