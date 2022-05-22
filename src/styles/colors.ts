@@ -10,4 +10,6 @@ export default {
   greyPlatinum: '#EBEBED',
 
   black: '#000000',
+
+  white: '#FFFFFF',
 };

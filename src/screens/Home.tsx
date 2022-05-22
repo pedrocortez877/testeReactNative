@@ -7,31 +7,32 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/core';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 import colors from '../styles/colors';
 
 import api from '../services/api';
 
+import {RootStackParamsList} from '../types/RootStackParamsList';
+import {ProductTypes} from '../types/ProductTypes';
+
 import {CartContext} from '../contexts/CartContext';
 
-import IconBag from '../assets/bag.png';
-import IconAdd from '../assets/add.png';
+import {CardProduct} from '../components/CardProduct';
 
-interface ProductTypes {
-  id: Number;
-  title: String;
-  price: String;
-  category: String;
-  description: String;
-  image: String;
-}
+import IconBag from '../assets/bag.png';
+
+type HomeScreenProp = StackNavigationProp<RootStackParamsList, 'Home'>;
 
 export function Home() {
+  const navigation = useNavigation<HomeScreenProp>();
   const [products, setProducts] = useState<ProductTypes[]>([]);
   const [categories, setCategories] = useState<Array<String>>([]);
   const [newProducts, setNewProducts] = useState<ProductTypes[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<String>('');
 
-  const {addProductToCart} = useContext(CartContext);
+  const {productsCart} = useContext(CartContext);
 
   useEffect(() => {
     function getCategories() {
@@ -61,11 +62,19 @@ export function Home() {
   }, []);
 
   useEffect(() => {
-    setNewProducts(products.filter(product => product.id <= 5));
+    setNewProducts(products.slice(0, 5));
   }, [products]);
 
-  function handlePressAddProductToCart(item: ProductTypes) {
-    addProductToCart(item);
+  function handlePressSelectCategory(item: String) {
+    setSelectedCategory(item);
+    api
+      .get(`/products/category/${item}`)
+      .then(response => {
+        setProducts(response.data);
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
   }
   return (
     <View style={styles.container}>
@@ -73,6 +82,15 @@ export function Home() {
         <View style={styles.titleAndIconBagArea}>
           <Text style={styles.title}>Produtos</Text>
           <Image source={IconBag} style={styles.iconBag} />
+          {productsCart.length ? (
+            <View style={styles.countProductsToCartArea}>
+              <Text style={styles.countProductsToCartText}>
+                {productsCart.length}
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
         </View>
         <View style={styles.categoriesArea}>
           <Text style={styles.titleCategoriesArea}>FILTRAR CATEGORIA</Text>
@@ -80,8 +98,27 @@ export function Home() {
             <FlatList
               data={categories}
               renderItem={({item}) => (
-                <TouchableOpacity style={styles.buttonSelectCategory}>
-                  <Text style={styles.textCategoryButton}>{item}</Text>
+                <TouchableOpacity
+                  style={
+                    selectedCategory === item
+                      ? [
+                          styles.buttonSelectCategory,
+                          styles.buttonSelectedCategory,
+                        ]
+                      : styles.buttonSelectCategory
+                  }
+                  onPress={() => handlePressSelectCategory(item)}>
+                  <Text
+                    style={
+                      selectedCategory === item
+                        ? [
+                            styles.textCategoryButton,
+                            styles.textCategorySelectedButton,
+                          ]
+                        : styles.textCategoryButton
+                    }>
+                    {item}
+                  </Text>
                 </TouchableOpacity>
               )}
               horizontal={true}
@@ -89,40 +126,13 @@ export function Home() {
             />
           </View>
         </View>
+      </View>
+      <View style={styles.body}>
         <View style={styles.newsArea}>
           <Text style={styles.newsTitle}>Novidades</Text>
           <FlatList
             data={newProducts}
-            renderItem={({item}) => (
-              <View style={styles.cardProduct}>
-                <Image
-                  source={{uri: `${item.image}`}}
-                  style={styles.imageProduct}
-                />
-                <View style={styles.descriptionProductArea}>
-                  <Text style={styles.categoryName}>{item.category}</Text>
-                  <Text style={styles.productName}>
-                    {item.title.length > 30
-                      ? item.title.substring(0, 21)
-                      : item.title}
-                  </Text>
-                  <Text style={styles.descriptionProduct}>
-                    {item.description.substring(0, 70).concat('...')}
-                  </Text>
-                </View>
-                <View style={styles.footerCardProduct}>
-                  <Text style={styles.productValue}>${item.price}</Text>
-                  <TouchableOpacity
-                    style={styles.buttonAddProductToCart}
-                    onPress={() => handlePressAddProductToCart(item)}>
-                    <Image
-                      source={IconAdd}
-                      style={styles.iconButtonAddProductToCart}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
+            renderItem={({item}) => <CardProduct item={item} news={true} />}
             style={styles.listNews}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
@@ -134,33 +144,7 @@ export function Home() {
           <View style={styles.listProducts}>
             <FlatList
               data={products}
-              renderItem={({item}) => (
-                <View style={styles.cardProduct}>
-                  <Image
-                    source={{uri: `${item.image}`}}
-                    style={styles.imageProduct}
-                  />
-                  <TouchableOpacity
-                    style={styles.buttonAddProductToCartList}
-                    onPress={() => handlePressAddProductToCart(item)}>
-                    <Image
-                      source={IconAdd}
-                      style={styles.iconButtonAddProductToCart}
-                    />
-                  </TouchableOpacity>
-                  <View style={styles.descriptionProductArea}>
-                    <Text style={styles.categoryName}>{item.category}</Text>
-                    <Text style={styles.productName}>
-                      {item.title.length > 30
-                        ? item.title.substring(0, 21)
-                        : item.title}
-                    </Text>
-                  </View>
-                  <View style={styles.footerCardProduct}>
-                    <Text style={styles.productValue}>${item.price}</Text>
-                  </View>
-                </View>
-              )}
+              renderItem={({item}) => <CardProduct item={item} news={false} />}
               style={styles.listNews}
               contentContainerStyle={styles.contentListView}
               numColumns={2}
@@ -171,6 +155,17 @@ export function Home() {
           </View>
         </View>
       </View>
+      {productsCart.length ? (
+        <View style={styles.buttonGoToCartArea}>
+          <TouchableOpacity
+            style={styles.buttonGoToCart}
+            onPress={() => navigation.navigate('Cart')}>
+            <Text style={styles.textButtonGoToCart}>IR PARA CARRINHO</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <></>
+      )}
     </View>
   );
 }
@@ -199,8 +194,30 @@ const styles = StyleSheet.create({
     fontFamily: 'WorkSans-Bold',
   },
   iconBag: {
-    width: 20,
-    height: 23,
+    width: 27,
+    height: 30,
+  },
+  countProductsToCartArea: {
+    width: 16,
+    height: 16,
+
+    backgroundColor: colors.background,
+
+    borderRadius: 22,
+
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    right: 0,
+    top: 2,
+
+    zIndex: 99,
+  },
+  countProductsToCartText: {
+    fontSize: 10,
+    color: colors.purple,
+    fontFamily: 'WorkSans-Bold',
   },
   categoriesArea: {
     paddingTop: 8,
@@ -225,12 +242,25 @@ const styles = StyleSheet.create({
 
     color: colors.greyLight,
   },
+  buttonSelectedCategory: {
+    borderWidth: 0,
+
+    backgroundColor: colors.purple,
+    color: colors.white,
+  },
   textCategoryButton: {
     color: colors.greyLight,
 
     fontSize: 11,
     fontWeight: 'bold',
     fontFamily: 'WorkSans-Bold',
+  },
+  textCategorySelectedButton: {
+    color: colors.white,
+  },
+  body: {
+    flex: 1,
+    width: '100%',
   },
   newsArea: {
     paddingVertical: 10,
@@ -247,71 +277,6 @@ const styles = StyleSheet.create({
   listNews: {
     height: 300,
   },
-  cardProduct: {
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    marginRight: 15,
-
-    width: 172,
-  },
-  imageProduct: {
-    width: 172,
-    height: 183,
-
-    borderRadius: 10,
-  },
-  descriptionProductArea: {
-    maxWidth: 170,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  categoryName: {
-    color: colors.purple,
-
-    fontSize: 10,
-    fontFamily: 'WorkSans-Bold',
-  },
-  productName: {
-    color: colors.black,
-
-    fontSize: 14,
-    fontFamily: 'WorkSans-Bold',
-  },
-  descriptionProduct: {
-    color: colors.grey,
-
-    fontSize: 10,
-    fontFamily: 'WorkSans-Regular',
-  },
-  footerCardProduct: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-
-    width: '92%',
-  },
-  productValue: {
-    color: colors.purple,
-
-    fontSize: 22,
-    fontFamily: 'WorkSans-Bold',
-  },
-  buttonAddProductToCart: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
-
-    borderWidth: 1,
-    borderColor: colors.purple,
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconButtonAddProductToCart: {
-    width: 10,
-    height: 10,
-  },
   titleListProductsArea: {
     color: colors.black,
 
@@ -324,23 +289,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'nowrap',
   },
-  buttonAddProductToCartList: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
+  contentListView: {
+    paddingBottom: 60,
+  },
+  buttonGoToCartArea: {
+    width: '100%',
+    height: 110,
 
-    marginTop: -30,
-    marginRight: -130,
+    position: 'absolute',
+    bottom: 0,
+
+    zIndex: 99,
 
     backgroundColor: colors.background,
 
-    borderWidth: 1,
-    borderColor: colors.purple,
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
 
     justifyContent: 'center',
     alignItems: 'center',
   },
-  contentListView: {
-    paddingBottom: 60,
+  buttonGoToCart: {
+    width: 320,
+    height: 50,
+
+    backgroundColor: colors.purple,
+
+    borderRadius: 37,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textButtonGoToCart: {
+    color: colors.white,
+
+    fontSize: 16,
+    fontFamily: 'WorkSans-Bold',
   },
 });
