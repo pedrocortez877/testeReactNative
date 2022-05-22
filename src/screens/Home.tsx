@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -11,6 +11,8 @@ import {
 import colors from '../styles/colors';
 
 import api from '../services/api';
+
+import {CartContext} from '../contexts/CartContext';
 
 import IconBag from '../assets/bag.png';
 import IconAdd from '../assets/add.png';
@@ -28,6 +30,8 @@ export function Home() {
   const [products, setProducts] = useState<ProductTypes[]>([]);
   const [categories, setCategories] = useState<Array<String>>([]);
   const [newProducts, setNewProducts] = useState<ProductTypes[]>([]);
+
+  const {addProductToCart} = useContext(CartContext);
 
   useEffect(() => {
     function getCategories() {
@@ -60,8 +64,8 @@ export function Home() {
     setNewProducts(products.filter(product => product.id <= 5));
   }, [products]);
 
-  function handlePressAddProductToCart(item) {
-    console.log(item);
+  function handlePressAddProductToCart(item: ProductTypes) {
+    addProductToCart(item);
   }
   return (
     <View style={styles.container}>
@@ -108,7 +112,9 @@ export function Home() {
                 </View>
                 <View style={styles.footerCardProduct}>
                   <Text style={styles.productValue}>${item.price}</Text>
-                  <TouchableOpacity style={styles.buttonAddProductToCart}>
+                  <TouchableOpacity
+                    style={styles.buttonAddProductToCart}
+                    onPress={() => handlePressAddProductToCart(item)}>
                     <Image
                       source={IconAdd}
                       style={styles.iconButtonAddProductToCart}
@@ -123,7 +129,7 @@ export function Home() {
             keyExtractor={item => item.id.toString()}
           />
         </View>
-        <View style={styles.listProductsArea}>
+        <View>
           <Text style={styles.titleListProductsArea}>Listagem</Text>
           <View style={styles.listProducts}>
             <FlatList
@@ -156,6 +162,7 @@ export function Home() {
                 </View>
               )}
               style={styles.listNews}
+              contentContainerStyle={styles.contentListView}
               numColumns={2}
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item.id.toString()}
@@ -305,14 +312,13 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
   },
-  listProductsArea: {
-    flex: 1,
-  },
   titleListProductsArea: {
     color: colors.black,
 
     fontSize: 24,
     fontFamily: 'WorkSans-SemiBold',
+
+    padding: 10,
   },
   listProducts: {
     flexDirection: 'row',
@@ -333,5 +339,8 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  contentListView: {
+    paddingBottom: 60,
   },
 });
