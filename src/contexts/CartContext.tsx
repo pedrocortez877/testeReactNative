@@ -8,6 +8,7 @@ export const CartContext = createContext({} as CartContextTypes);
 export function CartContextProvider(props: CartContextProviderTypes) {
   const [productsCart, setProductsCart] = useState<ProductTypes[]>([]);
   const [totalValue, setTotalValue] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   function addProductToCart(product: ProductTypes) {
     let newProduct = true;
@@ -20,6 +21,7 @@ export function CartContextProvider(props: CartContextProviderTypes) {
     });
 
     setTotalValue(value => value + Number(product.price));
+    setTotalQuantity(value => value + 1);
 
     if (!newProduct) {
       return;
@@ -35,7 +37,13 @@ export function CartContextProvider(props: CartContextProviderTypes) {
 
   return (
     <CartContext.Provider
-      value={{productsCart, addProductToCart, removeProductToCart, totalValue}}>
+      value={{
+        productsCart,
+        addProductToCart,
+        removeProductToCart,
+        totalValue,
+        totalQuantity,
+      }}>
       {props.children}
     </CartContext.Provider>
   );

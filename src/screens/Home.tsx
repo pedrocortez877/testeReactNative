@@ -32,7 +32,7 @@ export function Home() {
   const [newProducts, setNewProducts] = useState<ProductTypes[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<String>('');
 
-  const {productsCart} = useContext(CartContext);
+  const {productsCart, totalQuantity} = useContext(CartContext);
 
   useEffect(() => {
     function getCategories() {
@@ -82,10 +82,10 @@ export function Home() {
         <View style={styles.titleAndIconBagArea}>
           <Text style={styles.title}>Produtos</Text>
           <Image source={IconBag} style={styles.iconBag} />
-          {productsCart.length ? (
+          {totalQuantity ? (
             <View style={styles.countProductsToCartArea}>
               <Text style={styles.countProductsToCartText}>
-                {productsCart.length}
+                {totalQuantity}
               </Text>
             </View>
           ) : (
