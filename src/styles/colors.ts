@@ -8,4 +8,6 @@ export default {
   greyLight: '#B4B4B6',
 
   greyPlatinum: '#EBEBED',
+
+  black: '#000000',
 };

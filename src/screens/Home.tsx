@@ -13,6 +13,8 @@ import colors from '../styles/colors';
 import api from '../services/api';
 
 import IconBag from '../assets/bag.png';
+import IconAdd from '../assets/add.png';
+
 interface ProductTypes {
   id: Number;
   title: String;
@@ -25,27 +27,42 @@ interface ProductTypes {
 export function Home() {
   const [products, setProducts] = useState<ProductTypes[]>([]);
   const [categories, setCategories] = useState<Array<String>>([]);
+  const [newProducts, setNewProducts] = useState<ProductTypes[]>([]);
 
   useEffect(() => {
-    async function getCategories() {
-      const response = await api.get('/products/categories');
-
-      if (response.status === 200) {
-        setCategories(response.data);
-      }
+    function getCategories() {
+      api
+        .get('/products/categories')
+        .then(response => {
+          setCategories(response.data);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
     }
 
-    async function getProducts() {
-      const response = await api.get('/products');
-
-      if (response.status === 200) {
-        setProducts(response.data);
-      }
+    function getProducts() {
+      api
+        .get('/products')
+        .then(response => {
+          setProducts(response.data);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
     }
 
     getCategories();
     getProducts();
   }, []);
+
+  useEffect(() => {
+    setNewProducts(products.filter(product => product.id <= 5));
+  }, [products]);
+
+  function handlePressAddProductToCart(item) {
+    console.log(item);
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -68,6 +85,84 @@ export function Home() {
             />
           </View>
         </View>
+        <View style={styles.newsArea}>
+          <Text style={styles.newsTitle}>Novidades</Text>
+          <FlatList
+            data={newProducts}
+            renderItem={({item}) => (
+              <View style={styles.cardProduct}>
+                <Image
+                  source={{uri: `${item.image}`}}
+                  style={styles.imageProduct}
+                />
+                <View style={styles.descriptionProductArea}>
+                  <Text style={styles.categoryName}>{item.category}</Text>
+                  <Text style={styles.productName}>
+                    {item.title.length > 30
+                      ? item.title.substring(0, 21)
+                      : item.title}
+                  </Text>
+                  <Text style={styles.descriptionProduct}>
+                    {item.description.substring(0, 70).concat('...')}
+                  </Text>
+                </View>
+                <View style={styles.footerCardProduct}>
+                  <Text style={styles.productValue}>${item.price}</Text>
+                  <TouchableOpacity style={styles.buttonAddProductToCart}>
+                    <Image
+                      source={IconAdd}
+                      style={styles.iconButtonAddProductToCart}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            style={styles.listNews}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.id.toString()}
+          />
+        </View>
+        <View style={styles.listProductsArea}>
+          <Text style={styles.titleListProductsArea}>Listagem</Text>
+          <View style={styles.listProducts}>
+            <FlatList
+              data={products}
+              renderItem={({item}) => (
+                <View style={styles.cardProduct}>
+                  <Image
+                    source={{uri: `${item.image}`}}
+                    style={styles.imageProduct}
+                  />
+                  <TouchableOpacity
+                    style={styles.buttonAddProductToCartList}
+                    onPress={() => handlePressAddProductToCart(item)}>
+                    <Image
+                      source={IconAdd}
+                      style={styles.iconButtonAddProductToCart}
+                    />
+                  </TouchableOpacity>
+                  <View style={styles.descriptionProductArea}>
+                    <Text style={styles.categoryName}>{item.category}</Text>
+                    <Text style={styles.productName}>
+                      {item.title.length > 30
+                        ? item.title.substring(0, 21)
+                        : item.title}
+                    </Text>
+                  </View>
+                  <View style={styles.footerCardProduct}>
+                    <Text style={styles.productValue}>${item.price}</Text>
+                  </View>
+                </View>
+              )}
+              style={styles.listNews}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.id.toString()}
+              key={'#'}
+            />
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -76,9 +171,10 @@ export function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.background,
+
+    paddingTop: 10,
 
     paddingHorizontal: 18,
   },
@@ -92,7 +188,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black',
+    color: colors.black,
     fontFamily: 'WorkSans-Bold',
   },
   iconBag: {
@@ -128,5 +224,114 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: 'bold',
     fontFamily: 'WorkSans-Bold',
+  },
+  newsArea: {
+    paddingVertical: 10,
+
+    borderBottomWidth: 1,
+    borderColor: colors.greyPlatinum,
+  },
+  newsTitle: {
+    color: colors.black,
+
+    fontSize: 24,
+    fontFamily: 'WorkSans-SemiBold',
+  },
+  listNews: {
+    height: 300,
+  },
+  cardProduct: {
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    marginRight: 15,
+
+    width: 172,
+  },
+  imageProduct: {
+    width: 172,
+    height: 183,
+
+    borderRadius: 10,
+  },
+  descriptionProductArea: {
+    maxWidth: 170,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  categoryName: {
+    color: colors.purple,
+
+    fontSize: 10,
+    fontFamily: 'WorkSans-Bold',
+  },
+  productName: {
+    color: colors.black,
+
+    fontSize: 14,
+    fontFamily: 'WorkSans-Bold',
+  },
+  descriptionProduct: {
+    color: colors.grey,
+
+    fontSize: 10,
+    fontFamily: 'WorkSans-Regular',
+  },
+  footerCardProduct: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    width: '92%',
+  },
+  productValue: {
+    color: colors.purple,
+
+    fontSize: 22,
+    fontFamily: 'WorkSans-Bold',
+  },
+  buttonAddProductToCart: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+
+    borderWidth: 1,
+    borderColor: colors.purple,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconButtonAddProductToCart: {
+    width: 10,
+    height: 10,
+  },
+  listProductsArea: {
+    flex: 1,
+  },
+  titleListProductsArea: {
+    color: colors.black,
+
+    fontSize: 24,
+    fontFamily: 'WorkSans-SemiBold',
+  },
+  listProducts: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+  },
+  buttonAddProductToCartList: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+
+    marginTop: -30,
+    marginRight: -130,
+
+    backgroundColor: colors.background,
+
+    borderWidth: 1,
+    borderColor: colors.purple,
+
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
