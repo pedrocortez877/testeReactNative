@@ -1,6 +1,8 @@
 export default {
   purple: '#8775FE',
 
+  blueGray: '#5A9ACF',
+
   purpleLight: '#ECE9FF',
 
   background: '#F8F8F8',
@@ -15,7 +17,11 @@ export default {
 
   greyDark: '#404040',
 
+  dimGrey: '#696969',
+
   black: '#000000',
 
   white: '#FFFFFF',
+
+  salmon: '#FD746A',
 };

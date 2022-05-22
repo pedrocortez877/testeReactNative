@@ -32,6 +32,23 @@ export function CartContextProvider(props: CartContextProviderTypes) {
   }
 
   function removeProductToCart(product: ProductTypes) {
+    if (productsCart.length === 1) {
+      setTotalValue(0);
+      setTotalQuantity(0);
+    } else {
+      setTotalValue(value => value - Number(product.price));
+      setTotalQuantity(value => value - 1);
+    }
+
+    if (product.quantity > 1) {
+      productsCart.map(item => {
+        if (item.id === product.id) {
+          item.quantity--;
+        }
+      });
+      return;
+    }
+
     setProductsCart(productsCart.filter(item => item.id !== product.id));
   }
 

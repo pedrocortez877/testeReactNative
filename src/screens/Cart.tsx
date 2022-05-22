@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useNavigation} from '@react-navigation/native';
 
@@ -15,6 +15,10 @@ import {CartContext} from '../contexts/CartContext';
 
 import {RootStackParamsList} from '../types/RootStackParamsList';
 
+import {ProductTypes} from '../types/ProductTypes';
+
+import {ModalComponent} from '../components/Modal';
+
 import Arrow from '../assets/arrow.png';
 import Add from '../assets/addGrey.png';
 import Reduce from '../assets/reduce.png';
@@ -24,7 +28,26 @@ type CartScreenProp = StackNavigationProp<RootStackParamsList, 'Cart'>;
 
 export function Cart() {
   const navigation = useNavigation<CartScreenProp>();
-  const {productsCart, totalValue, addProductToCart} = useContext(CartContext);
+  const {productsCart, totalValue, addProductToCart, removeProductToCart} =
+    useContext(CartContext);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [productDelete, setProductDelete] = useState<ProductTypes>();
+
+  function handlePressCloseModal() {
+    setModalVisible(!modalVisible);
+  }
+
+  function handlePressDeleteProduct(item: ProductTypes) {
+    setProductDelete(item);
+    setModalVisible(!modalVisible);
+  }
+
+  function handlePressConfirmDeleteProduct() {
+    if (productDelete) {
+      removeProductToCart(productDelete);
+      setModalVisible(!modalVisible);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -61,7 +84,9 @@ export function Cart() {
                   </View>
                 </View>
                 <View style={styles.buttonsChangeProductsInCartArea}>
-                  <TouchableOpacity style={styles.buttonReduce}>
+                  <TouchableOpacity
+                    style={styles.buttonReduce}
+                    onPress={() => handlePressDeleteProduct(item)}>
                     <Image source={Reduce} />
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -93,6 +118,11 @@ export function Cart() {
           </TouchableOpacity>
         </View>
       </View>
+      <ModalComponent
+        modalVisible={modalVisible}
+        closeModal={handlePressCloseModal}
+        confirmDeleteProduct={handlePressConfirmDeleteProduct}
+      />
     </View>
   );
 }
