@@ -25,18 +25,18 @@ export function CardProduct(props: PropsCardProduct) {
     <View style={styles.cardProduct}>
       <Image source={{uri: `${item.image}`}} style={styles.imageProduct} />
       {news ? (
+        <></>
+      ) : (
         <TouchableOpacity
           style={styles.buttonAddProductToCartList}
           onPress={() => handlePressAddProductToCart(item)}>
           <Image source={IconAdd} style={styles.iconButtonAddProductToCart} />
         </TouchableOpacity>
-      ) : (
-        <></>
       )}
       <View style={styles.descriptionProductArea}>
         <Text style={styles.categoryName}>{item.category}</Text>
         <Text style={styles.productName}>
-          {item.title.length > 30 ? item.title.substring(0, 20) : item.title}
+          {item.title.length > 30 ? item.title.substring(0, 17) : item.title}
         </Text>
         {news ? (
           <Text style={styles.descriptionProduct}>
@@ -49,13 +49,13 @@ export function CardProduct(props: PropsCardProduct) {
       <View style={styles.footerCardProduct}>
         <Text style={styles.productValue}>${item.price}</Text>
         {news ? (
-          <></>
-        ) : (
           <TouchableOpacity
             style={styles.buttonAddProductToCart}
             onPress={() => handlePressAddProductToCart(item)}>
             <Image source={IconAdd} style={styles.iconButtonAddProductToCart} />
           </TouchableOpacity>
+        ) : (
+          <></>
         )}
       </View>
     </View>
