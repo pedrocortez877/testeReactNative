@@ -17,10 +17,6 @@ export function CardProduct(props: PropsCardProduct) {
   const {addProductToCart} = useContext(CartContext);
   const {item, news} = props;
 
-  function handlePressAddProductToCart(itemAddToCart: ProductTypes) {
-    addProductToCart(itemAddToCart);
-  }
-
   return (
     <View style={styles.cardProduct}>
       <Image source={{uri: `${item.image}`}} style={styles.imageProduct} />
@@ -29,7 +25,7 @@ export function CardProduct(props: PropsCardProduct) {
       ) : (
         <TouchableOpacity
           style={styles.buttonAddProductToCartList}
-          onPress={() => handlePressAddProductToCart(item)}>
+          onPress={() => addProductToCart(item)}>
           <Image source={IconAdd} style={styles.iconButtonAddProductToCart} />
         </TouchableOpacity>
       )}
@@ -51,7 +47,7 @@ export function CardProduct(props: PropsCardProduct) {
         {news ? (
           <TouchableOpacity
             style={styles.buttonAddProductToCart}
-            onPress={() => handlePressAddProductToCart(item)}>
+            onPress={() => addProductToCart(item)}>
             <Image source={IconAdd} style={styles.iconButtonAddProductToCart} />
           </TouchableOpacity>
         ) : (

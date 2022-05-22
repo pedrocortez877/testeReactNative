@@ -24,7 +24,7 @@ type CartScreenProp = StackNavigationProp<RootStackParamsList, 'Cart'>;
 
 export function Cart() {
   const navigation = useNavigation<CartScreenProp>();
-  const {productsCart, totalValue} = useContext(CartContext);
+  const {productsCart, totalValue, addProductToCart} = useContext(CartContext);
 
   return (
     <View style={styles.container}>
@@ -64,7 +64,9 @@ export function Cart() {
                   <TouchableOpacity style={styles.buttonReduce}>
                     <Image source={Reduce} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.buttonAdd}>
+                  <TouchableOpacity
+                    style={styles.buttonAdd}
+                    onPress={() => addProductToCart(item)}>
                     <Image source={Add} />
                   </TouchableOpacity>
                 </View>
