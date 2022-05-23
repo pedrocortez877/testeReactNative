@@ -18,6 +18,7 @@ import {RootStackParamsList} from '../types/RootStackParamsList';
 import {ProductTypes} from '../types/ProductTypes';
 
 import {ModalComponent} from '../components/Modal';
+import {Button} from '../components/Button';
 
 import Arrow from '../assets/arrow.png';
 import Add from '../assets/addGrey.png';
@@ -112,15 +113,11 @@ export function Cart() {
               <Text style={styles.totalValueDescription}>Total: </Text>
               <Text style={styles.totalValue}>${totalValue}</Text>
             </View>
-            <View style={styles.buttonConfirmationSaleArea}>
-              <TouchableOpacity
-                style={styles.buttonConfirmationSale}
-                onPress={() => navigation.navigate('Confirmation')}>
-                <Text style={styles.textButtonConfirmationSale}>
-                  FINALIZAR COMPRA
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <Button
+              title="FINALIZAR COMPRA"
+              destination="Confirmation"
+              navigation={navigation}
+            />
           </View>
         </>
       ) : (
@@ -129,15 +126,11 @@ export function Cart() {
           <Text style={styles.descriptionEmptyCart}>
             NENHUM ITEM ADICIONADO NO CARRINHO
           </Text>
-          <View style={styles.buttonConfirmationSaleArea}>
-            <TouchableOpacity
-              style={styles.buttonConfirmationSale}
-              onPress={() => navigation.navigate('Home')}>
-              <Text style={styles.textButtonConfirmationSale}>
-                ADICIONAR ITENS
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <Button
+            title="ADICIONAR ITEMS"
+            destination="Home"
+            navigation={navigation}
+          />
         </View>
       )}
       <ModalComponent
@@ -304,31 +297,6 @@ const styles = StyleSheet.create({
     color: colors.black,
 
     fontSize: 14,
-    fontFamily: 'WorkSans-Bold',
-  },
-  buttonConfirmationSaleArea: {
-    width: '100%',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonConfirmationSale: {
-    width: 320,
-    height: 50,
-
-    marginTop: 20,
-
-    backgroundColor: colors.purple,
-
-    borderRadius: 37,
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textButtonConfirmationSale: {
-    color: colors.white,
-
-    fontSize: 16,
     fontFamily: 'WorkSans-Bold',
   },
   emptyCarArea: {

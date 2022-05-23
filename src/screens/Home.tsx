@@ -22,6 +22,7 @@ import {CartContext} from '../contexts/CartContext';
 import {CardProduct} from '../components/CardProduct';
 
 import IconBag from '../assets/bag.png';
+import {Button} from '../components/Button';
 
 type HomeScreenProp = StackNavigationProp<RootStackParamsList, 'Home'>;
 
@@ -168,13 +169,11 @@ export function Home() {
         </View>
       </View>
       {productsCart.length ? (
-        <View style={styles.buttonGoToCartArea}>
-          <TouchableOpacity
-            style={styles.buttonGoToCart}
-            onPress={() => navigation.navigate('Cart')}>
-            <Text style={styles.textButtonGoToCart}>IR PARA CARRINHO</Text>
-          </TouchableOpacity>
-        </View>
+        <Button
+          title="IR PARA CARRINHO"
+          destination="Cart"
+          navigation={navigation}
+        />
       ) : (
         <></>
       )}
@@ -303,39 +302,5 @@ const styles = StyleSheet.create({
   },
   contentListView: {
     paddingBottom: 60,
-  },
-  buttonGoToCartArea: {
-    width: '100%',
-    height: 110,
-
-    position: 'absolute',
-    bottom: 0,
-
-    zIndex: 99,
-
-    backgroundColor: colors.background,
-
-    borderTopLeftRadius: 14,
-    borderTopRightRadius: 14,
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonGoToCart: {
-    width: 320,
-    height: 50,
-
-    backgroundColor: colors.purple,
-
-    borderRadius: 37,
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  textButtonGoToCart: {
-    color: colors.white,
-
-    fontSize: 16,
-    fontFamily: 'WorkSans-Bold',
   },
 });
