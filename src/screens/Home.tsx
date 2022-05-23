@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
@@ -23,6 +24,7 @@ import {CardProduct} from '../components/CardProduct';
 
 import IconBag from '../assets/bag.png';
 import {Button} from '../components/Button';
+import AsyncStorage from '@react-native-community/async-storage';
 
 type HomeScreenProp = StackNavigationProp<RootStackParamsList, 'Home'>;
 
@@ -33,7 +35,8 @@ export function Home() {
   const [newProducts, setNewProducts] = useState<ProductTypes[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<String>('');
 
-  const {productsCart, totalQuantity} = useContext(CartContext);
+  const {productsCart, totalQuantity, setMultiplesProductsToCart} =
+    useContext(CartContext);
 
   useEffect(() => {
     function getCategories() {
@@ -47,8 +50,25 @@ export function Home() {
         });
     }
 
+    async function getProductsCartInAsyncStorage() {
+      try {
+        const productsCartInAsyncStorage = await AsyncStorage.getItem(
+          'productsCart',
+        );
+
+        console.log(productsCartInAsyncStorage);
+
+        if (productsCartInAsyncStorage) {
+          setMultiplesProductsToCart(JSON.parse(productsCartInAsyncStorage));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     getCategories();
     getProducts();
+    getProductsCartInAsyncStorage();
   }, []);
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import {StatusBar} from 'react-native';
+
 import {CartContextProvider} from './src/contexts/CartContext';
 
 import Routes from './src/routes';
