@@ -46,17 +46,6 @@ export function Home() {
         });
     }
 
-    function getProducts() {
-      api
-        .get('/products')
-        .then(response => {
-          setProducts(response.data);
-        })
-        .catch(error => {
-          console.log(error.response);
-        });
-    }
-
     getCategories();
     getProducts();
   }, []);
@@ -66,7 +55,16 @@ export function Home() {
   }, [products]);
 
   function handlePressSelectCategory(item: String) {
+    if (item === selectedCategory) {
+      setSelectedCategory('');
+      getProducts();
+      return;
+    }
     setSelectedCategory(item);
+    getProductsInCategory(item);
+  }
+
+  function getProductsInCategory(item: String) {
     api
       .get(`/products/category/${item}`)
       .then(response => {
@@ -76,6 +74,18 @@ export function Home() {
         console.log(error.response);
       });
   }
+
+  function getProducts() {
+    api
+      .get('/products')
+      .then(response => {
+        setProducts(response.data);
+      })
+      .catch(error => {
+        console.log(error.response);
+      });
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>

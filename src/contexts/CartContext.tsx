@@ -32,7 +32,7 @@ export function CartContextProvider(props: CartContextProviderTypes) {
   }
 
   function removeProductToCart(product: ProductTypes) {
-    if (productsCart.length === 1) {
+    if (totalQuantity === 1) {
       setTotalValue(0);
       setTotalQuantity(0);
     } else {
