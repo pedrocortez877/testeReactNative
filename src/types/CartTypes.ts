@@ -10,6 +10,7 @@ export interface CartContextTypes {
   removeProductToCart: (value: ProductTypes) => void;
   cleanCart: () => void;
   setMultiplesProductsToCart: (value: ProductTypes[]) => void;
+  cleanAsyncStorage: () => void;
 }
 
 export interface CartContextProviderTypes {

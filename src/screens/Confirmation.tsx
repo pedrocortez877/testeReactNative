@@ -20,10 +20,11 @@ type ConfirmationScreenProp = StackNavigationProp<
 
 export function Confirmation() {
   const navigation = useNavigation<ConfirmationScreenProp>();
-  const {cleanCart} = useContext(CartContext);
+  const {cleanCart, cleanAsyncStorage} = useContext(CartContext);
 
   function cleanCartAndRedirect() {
     cleanCart();
+    cleanAsyncStorage();
     navigation.navigate('Home');
   }
   return (

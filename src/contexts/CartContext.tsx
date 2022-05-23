@@ -13,12 +13,13 @@ export function CartContextProvider(props: CartContextProviderTypes) {
 
   async function addProductToCart(product: ProductTypes) {
     let newProduct = true;
-    const asyncStorageCartProducts = [...productsCart, product]; //INSERIDO POIS OPERAÇÃO FEITA NO ASYNC STORAGE ESTAVA ACONTECENDO ANTES DA ATUALIZAÇÃO DO STATE
+    let asyncStorageCartProducts = [] as ProductTypes[]; //INSERIDO POIS OPERAÇÃO FEITA NO ASYNC STORAGE ESTAVA ACONTECENDO ANTES DA ATUALIZAÇÃO DO STATE
 
     productsCart.map(item => {
       if (item.id === product.id) {
         product.quantity++;
         newProduct = false;
+        asyncStorageCartProducts = productsCart;
         return;
       }
     });
@@ -26,12 +27,12 @@ export function CartContextProvider(props: CartContextProviderTypes) {
     setTotalValue(value => value + Number(product.price));
     setTotalQuantity(value => value + 1);
 
-    if (!newProduct) {
-      return;
-    }
+    if (newProduct) {
+      product.quantity = 1;
+      setProductsCart(products => [...products, product]);
 
-    product.quantity = 1;
-    setProductsCart(products => [...products, product]);
+      asyncStorageCartProducts = [...productsCart, product];
+    }
 
     await AsyncStorage.setItem(
       'productsCart',
@@ -71,21 +72,26 @@ export function CartContextProvider(props: CartContextProviderTypes) {
     );
   }
 
+  function setMultiplesProductsToCart(products: ProductTypes[]) {
+    cleanCart();
+    setProductsCart(products);
+    products.map(product => {
+      console.log(product);
+      setTotalQuantity(value => value + product.quantity);
+      setTotalValue(
+        value => value + Number(product.price) * Number(product.quantity),
+      );
+    });
+  }
+
   function cleanCart() {
     setProductsCart([]);
     setTotalQuantity(0);
     setTotalValue(0);
   }
 
-  function setMultiplesProductsToCart(products: ProductTypes[]) {
-    cleanCart();
-    setProductsCart(products);
-    products.map(product => {
-      setTotalQuantity(value => value + product.quantity);
-      setTotalValue(
-        value => value + Number(product.price) * Number(product.quantity),
-      );
-    });
+  async function cleanAsyncStorage() {
+    await AsyncStorage.removeItem('productsCart');
   }
 
   return (
@@ -96,6 +102,7 @@ export function CartContextProvider(props: CartContextProviderTypes) {
         removeProductToCart,
         cleanCart,
         setMultiplesProductsToCart,
+        cleanAsyncStorage,
         totalValue,
         totalQuantity,
       }}>
