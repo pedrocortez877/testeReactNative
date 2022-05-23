@@ -56,8 +56,6 @@ export function Home() {
           'productsCart',
         );
 
-        console.log(productsCartInAsyncStorage);
-
         if (productsCartInAsyncStorage) {
           setMultiplesProductsToCart(JSON.parse(productsCartInAsyncStorage));
         }

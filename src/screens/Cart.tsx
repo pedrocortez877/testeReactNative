@@ -111,7 +111,12 @@ export function Cart() {
           <View style={styles.footer}>
             <View style={styles.totalValueArea}>
               <Text style={styles.totalValueDescription}>Total: </Text>
-              <Text style={styles.totalValue}>${totalValue}</Text>
+              <Text style={styles.totalValue}>
+                $
+                {totalValue.toString().split('.')[1].length > 2
+                  ? totalValue.toFixed(2)
+                  : totalValue}
+              </Text>
             </View>
             <Button
               title="FINALIZAR COMPRA"
