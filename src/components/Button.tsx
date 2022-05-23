@@ -5,12 +5,18 @@ import {ButtonProps} from '../types/ButtonProps';
 
 import colors from '../styles/colors';
 
-export function Button({title, destination, navigation, light}: ButtonProps) {
+export function Button({
+  title,
+  destination,
+  navigation,
+  light,
+  onPress,
+}: ButtonProps) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={light ? styles.buttonLight : styles.button}
-        onPress={() => navigation.navigate(destination)}>
+        onPress={onPress ? onPress : () => navigation.navigate(destination)}>
         <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
     </View>

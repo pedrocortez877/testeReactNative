@@ -52,12 +52,19 @@ export function CartContextProvider(props: CartContextProviderTypes) {
     setProductsCart(productsCart.filter(item => item.id !== product.id));
   }
 
+  function cleanCart() {
+    setProductsCart([]);
+    setTotalQuantity(0);
+    setTotalValue(0);
+  }
+
   return (
     <CartContext.Provider
       value={{
         productsCart,
         addProductToCart,
         removeProductToCart,
+        cleanCart,
         totalValue,
         totalQuantity,
       }}>

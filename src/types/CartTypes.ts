@@ -8,6 +8,7 @@ export interface CartContextTypes {
   totalQuantity: Number;
   addProductToCart: (value: ProductTypes) => void;
   removeProductToCart: (value: ProductTypes) => void;
+  cleanCart: () => void;
 }
 
 export interface CartContextProviderTypes {
