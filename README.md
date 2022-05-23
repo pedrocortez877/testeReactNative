@@ -29,7 +29,6 @@ $ git clone https://github.com/pedrocortez877/testeReactNative.git
 $ cd testeReactNative
 
 # Instale as dependências
-$ cd web
 $ npm install  - Caso use npm
 $ yarn - Caso use yarn
 
@@ -38,6 +37,7 @@ $ yarn start
 Após isso, inicie a aplicação em um dispositivo android ou ios rodando:
 $ yarn android #Para android
 $ yarn ios #Para IOS
+
 ```
 
 ### 🛠 Tecnologias
