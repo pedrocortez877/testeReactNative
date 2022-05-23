@@ -1,6 +1,8 @@
 export default {
   purple: '#8775FE',
 
+  purpleDark: '#504DB6',
+
   blueGray: '#5A9ACF',
 
   purpleLight: '#ECE9FF',

@@ -169,11 +169,14 @@ export function Home() {
         </View>
       </View>
       {productsCart.length ? (
-        <Button
-          title="IR PARA CARRINHO"
-          destination="Cart"
-          navigation={navigation}
-        />
+        <View style={styles.buttonGoToCartArea}>
+          <Button
+            title="IR PARA CARRINHO"
+            destination="Cart"
+            navigation={navigation}
+            light={true}
+          />
+        </View>
       ) : (
         <></>
       )}
@@ -302,5 +305,24 @@ const styles = StyleSheet.create({
   },
   contentListView: {
     paddingBottom: 60,
+  },
+  buttonGoToCartArea: {
+    width: '100%',
+    height: 70,
+
+    position: 'absolute',
+    bottom: 0,
+
+    zIndex: 99,
+
+    backgroundColor: colors.background,
+
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    paddingBottom: 20,
   },
 });

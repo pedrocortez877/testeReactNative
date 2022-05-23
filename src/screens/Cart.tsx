@@ -117,6 +117,7 @@ export function Cart() {
               title="FINALIZAR COMPRA"
               destination="Confirmation"
               navigation={navigation}
+              light={true}
             />
           </View>
         </>
@@ -130,6 +131,7 @@ export function Cart() {
             title="ADICIONAR ITEMS"
             destination="Home"
             navigation={navigation}
+            light={true}
           />
         </View>
       )}
