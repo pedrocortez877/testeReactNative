@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/core';
 import {StackNavigationProp} from '@react-navigation/stack';
 
@@ -24,7 +25,6 @@ import {CardProduct} from '../components/CardProduct';
 
 import IconBag from '../assets/bag.png';
 import {Button} from '../components/Button';
-import AsyncStorage from '@react-native-community/async-storage';
 
 type HomeScreenProp = StackNavigationProp<RootStackParamsList, 'Home'>;
 
@@ -115,7 +115,7 @@ export function Home() {
             {totalQuantity ? (
               <View style={styles.countProductsToCartArea}>
                 <Text style={styles.countProductsToCartText}>
-                  {totalQuantity}
+                  {totalQuantity.toString()}
                 </Text>
               </View>
             ) : (
