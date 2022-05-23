@@ -22,6 +22,8 @@ import {ModalComponent} from '../components/Modal';
 import Arrow from '../assets/arrow.png';
 import Add from '../assets/addGrey.png';
 import Reduce from '../assets/reduce.png';
+import Bag from '../assets/bagGrey.png';
+
 import colors from '../styles/colors';
 
 type CartScreenProp = StackNavigationProp<RootStackParamsList, 'Cart'>;
@@ -59,65 +61,85 @@ export function Cart() {
       <View style={styles.header}>
         <Text style={styles.titleScreen}>CARRINHO</Text>
       </View>
-      <View style={styles.body}>
-        <Text style={styles.titleBody}>Meu Carrinho</Text>
-        <View style={styles.listProductsArea}>
-          <FlatList
-            data={productsCart}
-            renderItem={({item}) => (
-              <View style={styles.contentCardProduct}>
-                <View style={styles.imageAndDescriptionProduct}>
-                  <Image
-                    style={styles.imageProduct}
-                    source={{uri: `${item.image}`}}
-                  />
-                  <View style={styles.descriptionProduct}>
-                    <Text style={styles.productName}>
-                      {item.title.length > 21
-                        ? item.title.substring(0, 21)
-                        : item.title}
-                    </Text>
-                    <View style={styles.quantityAndValueProduct}>
-                      <Text style={styles.quantity}>{item.quantity}x</Text>
-                      <Text style={styles.value}>${item.price}</Text>
+      {productsCart.length ? (
+        <>
+          <View style={styles.body}>
+            <Text style={styles.titleBody}>Meu Carrinho</Text>
+            <View style={styles.listProductsArea}>
+              <FlatList
+                data={productsCart}
+                renderItem={({item}) => (
+                  <View style={styles.contentCardProduct}>
+                    <View style={styles.imageAndDescriptionProduct}>
+                      <Image
+                        style={styles.imageProduct}
+                        source={{uri: `${item.image}`}}
+                      />
+                      <View style={styles.descriptionProduct}>
+                        <Text style={styles.productName}>
+                          {item.title.length > 21
+                            ? item.title.substring(0, 21)
+                            : item.title}
+                        </Text>
+                        <View style={styles.quantityAndValueProduct}>
+                          <Text style={styles.quantity}>{item.quantity}x</Text>
+                          <Text style={styles.value}>${item.price}</Text>
+                        </View>
+                      </View>
+                    </View>
+                    <View style={styles.buttonsChangeProductsInCartArea}>
+                      <TouchableOpacity
+                        style={styles.buttonReduce}
+                        onPress={() => handlePressDeleteProduct(item)}>
+                        <Image source={Reduce} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.buttonAdd}
+                        onPress={() => addProductToCart(item)}>
+                        <Image source={Add} />
+                      </TouchableOpacity>
                     </View>
                   </View>
-                </View>
-                <View style={styles.buttonsChangeProductsInCartArea}>
-                  <TouchableOpacity
-                    style={styles.buttonReduce}
-                    onPress={() => handlePressDeleteProduct(item)}>
-                    <Image source={Reduce} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.buttonAdd}
-                    onPress={() => addProductToCart(item)}>
-                    <Image source={Add} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-            style={styles.listProducts}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id.toString()}
-          />
+                )}
+                style={styles.listProducts}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item.id.toString()}
+              />
+            </View>
+          </View>
+          <View style={styles.footer}>
+            <View style={styles.totalValueArea}>
+              <Text style={styles.totalValueDescription}>Total: </Text>
+              <Text style={styles.totalValue}>${totalValue}</Text>
+            </View>
+            <View style={styles.buttonConfirmationSaleArea}>
+              <TouchableOpacity
+                style={styles.buttonConfirmationSale}
+                onPress={() => navigation.navigate('Confirmation')}>
+                <Text style={styles.textButtonConfirmationSale}>
+                  FINALIZAR COMPRA
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
+      ) : (
+        <View style={styles.emptyCarArea}>
+          <Image source={Bag} style={styles.imageBag} />
+          <Text style={styles.descriptionEmptyCart}>
+            NENHUM ITEM ADICIONADO NO CARRINHO
+          </Text>
+          <View style={styles.buttonConfirmationSaleArea}>
+            <TouchableOpacity
+              style={styles.buttonConfirmationSale}
+              onPress={() => navigation.navigate('Home')}>
+              <Text style={styles.textButtonConfirmationSale}>
+                ADICIONAR ITENS
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      <View style={styles.footer}>
-        <View style={styles.totalValueArea}>
-          <Text style={styles.totalValueDescription}>Total: </Text>
-          <Text style={styles.totalValue}>${totalValue}</Text>
-        </View>
-        <View style={styles.buttonConfirmationSaleArea}>
-          <TouchableOpacity
-            style={styles.buttonConfirmationSale}
-            onPress={() => navigation.navigate('Confirmation')}>
-            <Text style={styles.textButtonConfirmationSale}>
-              FINALIZAR COMPRA
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      )}
       <ModalComponent
         modalVisible={modalVisible}
         closeModal={handlePressCloseModal}
@@ -308,5 +330,26 @@ const styles = StyleSheet.create({
 
     fontSize: 16,
     fontFamily: 'WorkSans-Bold',
+  },
+  emptyCarArea: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    maxWidth: 240,
+  },
+  imageBag: {
+    width: 57,
+    height: 67,
+  },
+  descriptionEmptyCart: {
+    color: colors.grey,
+
+    fontSize: 16,
+    fontFamily: 'WorkSans-Bold',
+
+    paddingTop: 15,
+
+    textAlign: 'center',
   },
 });
